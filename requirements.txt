@@ -1,0 +1,25 @@
+# Core AI/ML
+tensorflow
+scikit-learn
+xgboost
+joblib
+pandas
+numpy
+
+# Data Validation & Quality
+pandera
+evidently
+
+# Dashboard
+streamlit
+
+# Utilities
+python-dotenv
+matplotlib
+seaborn
+
+# Dev Tools (for CI/CD)
+ruff
+pytest
+pytest-cov
+bandit

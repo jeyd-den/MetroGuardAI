@@ -1,0 +1,11 @@
+{
+  "isolation_forest": {
+    "n_estimators": 100,
+    "contamination": "auto"
+  },
+  "lstm_autoencoder": {
+    "epochs": 50,
+    "batch_size": 32,
+    "learning_rate": 0.001
+  }
+}

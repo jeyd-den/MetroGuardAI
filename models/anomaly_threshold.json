@@ -1,0 +1,5 @@
+{
+  "anomaly_threshold": 0.95,
+  "sensitivity": "medium",
+  "last_updated": "2026-11-02"
+}
