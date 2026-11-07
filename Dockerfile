@@ -6,9 +6,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends gcc python3-dev
 
 WORKDIR /build
 
-# Use the lock file for deterministic, secure installation
+# Use the lock file with hashes for cryptographic security
 COPY requirements.lock .
-RUN pip install --no-cache-dir --user --only-binary :all: -r requirements.lock
+RUN pip install --no-cache-dir --user --only-binary :all: --require-hashes -r requirements.lock
 
 # Stage 2: Runtime stage
 FROM python:3.11-slim-bookworm
