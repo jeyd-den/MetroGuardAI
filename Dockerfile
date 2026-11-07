@@ -6,9 +6,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends gcc python3-dev
 
 WORKDIR /build
 
-COPY requirements.txt .
-# Install dependencies into a local folder to avoid root-level system changes
-RUN pip install --no-cache-dir --user --only-binary :all: -r requirements.txt
+# Use the lock file for deterministic, secure installation
+COPY requirements.lock .
+RUN pip install --no-cache-dir --user --only-binary :all: -r requirements.lock
 
 # Stage 2: Runtime stage
 FROM python:3.11-slim-bookworm
