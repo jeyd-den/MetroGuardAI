@@ -13,7 +13,10 @@ ARTIFACTS = {
     "models/lstm_autoencoder.h5": "https://drive.google.com/uc?id=17Bjut3pqMogUxGX1rQX8eQ18yjqSfGqP",
     "models/scaler.joblib": "https://drive.google.com/uc?id=1EGic5Gu0gt3J77gIHNpGwARUmuEvouee",
     "data/raw/MetroPT.csv": "https://drive.google.com/uc?id=1Wm5ijAzbDBI4GuJuOQkqBrsKHQ8YB51X",
-    "data/raw/failure_windows.csv": "https://drive.google.com/uc?id=1ooJx3p5u7_K5OaTG0f4sweVZMlhmyApl"
+    "data/raw/failure_windows.csv": "https://drive.google.com/uc?id=1ooJx3p5u7_K5OaTG0f4sweVZMlhmyApl",
+    "data/processed/scores_lstm.parquet": "https://drive.google.com/uc?id=1gi1IH6JLjwkkbpqk8cb7KSxvhuvcyk5_",
+    "data/processed/scores_xgb.parquet": "https://drive.google.com/uc?id=1p0EK5VFj_aBclrQNbi3UqK-Wi2vhNl0d",
+    "models/metrics.json": "https://drive.google.com/uc?id=1C1Ek9VvR2IebkgCTQjHlgVNKqdYTHkVF"
 }
 
 def download_file(url, destination):
