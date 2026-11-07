@@ -1,21 +1,31 @@
-FROM python:3.11-slim
+# Stage 1: Build stage
+FROM python:3.11-slim-bookworm AS builder
 
-# Create a non-root user for security
+# Install build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends gcc python3-dev
+
+WORKDIR /build
+
+COPY requirements.txt .
+# Install dependencies into a local folder to avoid root-level system changes
+RUN pip install --no-cache-dir --user --only-binary :all: -r requirements.txt
+
+# Stage 2: Runtime stage
+FROM python:3.11-slim-bookworm
+
+# Create a non-privileged user for security
 RUN useradd -m appuser
 
 WORKDIR /app
 
-COPY requirements.txt .
-# Use --only-binary :all: to prevent execution of setup scripts from source packages
-RUN pip install --no-cache-dir --only-binary :all: -r requirements.txt
-
+# Copy only the installed packages from the builder stage
+COPY --from=builder /root/.local /home/appuser/.local
 COPY . .
 
-# Set ownership of the app directory to the non-root user
+# Ensure appuser owns the files and update PATH to include the local bin
 RUN chown -R appuser:appuser /app
-
-# Switch to the non-root user
 USER appuser
+ENV PATH=/home/appuser/.local/bin:${PATH}
 
 EXPOSE 8501
 
