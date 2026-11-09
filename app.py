@@ -7,24 +7,33 @@ from pathlib import Path
 from src.config import Config
 from src.data_loader import load_processed_data
 from src.failure_predictor import FailurePredictor
+from dotenv import load_dotenv
 
-# 1. CONFIGURATION & ARTIFACTS
+# 1. FORCE DOTENV PATH
+# Ensure we load the .env file from the project root regardless of where the app is started
+env_path = Config.BASE_DIR / ".env"
+load_dotenv(dotenv_path=env_path)
+
+# 2. CONFIGURATION & ARTIFACTS
+# We use absolute paths derived from Config to avoid CWD issues locally and in cloud
 ARTIFACTS = {
-    "models/lstm_autoencoder.h5": "https://drive.google.com/uc?id=17Bjut3pqMogUxGX1rQX8eQ18yjqSfGqP",
-    "models/scaler.joblib": "https://drive.google.com/uc?id=1EGic5Gu0gt3J77gIHNpGwARUmuEvouee",
-    "data/raw/MetroPT.csv": "https://drive.google.com/uc?id=1Wm5ijAzbDBI4GuJuOQkqBrsKHQ8YB51X",
-    "data/raw/failure_windows.csv": "https://drive.google.com/uc?id=1ooJx3p5u7_K5OaTG0f4sweVZMlhmyApl",
-    "data/processed/scores_lstm.parquet": "https://drive.google.com/uc?id=1gi1IH6JLjwkkbpqk8cb7KSxvhuvcyk5_",
-    "data/processed/scores_xgb.parquet": "https://drive.google.com/uc?id=1p0EK5VFj_aBclrQNbi3UqK-Wi2vhNl0d",
-    "models/metrics.json": "https://drive.google.com/uc?id=1C1Ek9VvR2IebkgCTQjHlgVNKqdYTHkVF"
+    str(Config.MODEL_PATH / "lstm_autoencoder.h5"): "https://drive.google.com/uc?id=17Bjut3pqMogUxGX1rQX8eQ18yjqSfGqP",
+    str(Config.MODEL_PATH / "scaler.joblib"): "https://drive.google.com/uc?id=1EGic5Gu0gt3J77gIHNpGwARUmuEvouee",
+    str(Config.DATA_RAW_PATH / "MetroPT.csv"): "https://drive.google.com/uc?id=1Wm5ijAzbDBI4GuJuOQkqBrsKHQ8YB51X",
+    str(Config.DATA_RAW_PATH / "failure_windows.csv"): "https://drive.google.com/uc?id=1ooJx3p5u7_K5OaTG0f4sweVZMlhmyApl",
+    str(Config.DATA_PROCESSED_PATH / "scores_lstm.parquet"): "https://drive.google.com/uc?id=1gi1IH6JLjwkkbpqk8cb7KSxvhuvcyk5_",
+    str(Config.DATA_PROCESSED_PATH / "scores_xgb.parquet"): "https://drive.google.com/uc?id=1p0EK5VFj_aBclrQNbi3UqK-Wi2vhNl0d",
+    str(Config.MODEL_PATH / "metrics.json"): "https://drive.google.com/uc?id=1C1Ek9VvR2IebkgCTQjHlgVNKqdYTHkVF"
 }
 
 def download_file(url, destination):
     """Downloads a file from a URL to a local path."""
-    os.makedirs(os.path.dirname(destination), exist_ok=True)
+    dest_path = Path(destination)
+    dest_path.parent.mkdir(parents=True, exist_ok=True)
+
     response = requests.get(url, stream=True)
     if response.status_code == 200:
-        with open(destination, 'wb') as f:
+        with open(dest_path, 'wb') as f:
             for chunk in response.iter_content(chunk_size=8192):
                 f.write(chunk)
         return True
@@ -35,7 +44,6 @@ def bootstrap_artifacts():
     missing = False
     for path, url in ARTIFACTS.items():
         if not os.path.exists(path):
-            # st.write(f"Downloading {path}...")
             if not download_file(url, path):
                 st.error(f"Failed to download {path} from cloud storage.")
                 missing = True
