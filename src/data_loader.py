@@ -9,6 +9,7 @@ def load_sensor_data():
     cols = {col.lower(): col for col in df.columns}
     if 'timestamp' in cols:
         df = df.rename(columns={cols['timestamp']: 'timestamp'})
+        df['timestamp'] = pd.to_datetime(df['timestamp'])
     return df
 
 def load_failure_labels():

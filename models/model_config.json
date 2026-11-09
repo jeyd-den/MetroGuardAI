@@ -4,6 +4,7 @@
     "contamination": "auto"
   },
   "lstm_autoencoder": {
+    "window_size": 60,
     "epochs": 50,
     "batch_size": 32,
     "learning_rate": 0.001

@@ -1,6 +1,7 @@
 import plotly.graph_objects as go
 import plotly.express as px
 import pandas as pd
+import numpy as np
 
 def plot_sensor_timeseries(df, sensor_cols, anomaly_indices=None):
     """

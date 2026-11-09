@@ -14,33 +14,33 @@ try:
 
     # Comparison Table
     st.subheader("Metric Comparison")
-    comp_df = pd.DataFrame({
-        "Metric": ["Precision", "Recall", "F1-Score"],
-        "LSTM Autoencoder": [
-            metrics["lstm"]["precision"],
-            metrics["lstm"]["recall"],
-            metrics["lstm"]["f1"]
-        ],
-        "Isolation Forest": [
-            metrics["iforest"]["precision"],
-            metrics["iforest"]["recall"],
-            metrics["iforest"]["f1"]
+
+    # Get available models from metrics keys
+    # This makes the page dynamic: it will show whatever models exist in metrics.json
+    models = [k for k in metrics.keys() if k != 'overall_f1']
+
+    comp_data = {
+        "Metric": ["Precision", "Recall", "F1-Score"]
+    }
+
+    for m in models:
+        comp_data[m] = [
+            metrics[m].get("precision", 0),
+            metrics[m].get("recall", 0),
+            metrics[m].get("f1", 0)
         ]
-    })
+
+    comp_df = pd.DataFrame(comp_data)
     st.table(comp_df)
 
     # Performance Chart
     fig = go.Figure()
-    fig.add_trace(go.Bar(
-        x=comp_df["Metric"],
-        y=comp_df["LSTM Autoencoder"],
-        name="LSTM"
-    ))
-    fig.add_trace(go.Bar(
-        x=comp_df["Metric"],
-        y=comp_df["Isolation Forest"],
-        name="iForest"
-    ))
+    for m in models:
+        fig.add_trace(go.Bar(
+            x=comp_df["Metric"],
+            y=comp_df[m],
+            name=m
+        ))
     fig.update_layout(barmode='group', template="plotly_white", title="Model Performance Comparison")
     st.plotly_chart(fig, use_container_width=True)
 

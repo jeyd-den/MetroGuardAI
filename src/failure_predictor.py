@@ -19,7 +19,7 @@ class FailurePredictor:
             recent_scores: List of recent anomaly scores.
             threshold: The calibrated anomaly threshold.
         """
-        if not recent_scores:
+        if recent_scores is None or len(recent_scores) == 0:
             return 100.0
 
         current_score = np.mean(recent_scores)
@@ -51,12 +51,19 @@ class FailurePredictor:
         Returns:
             The slope of the health trend (negative = declining).
         """
+        # Clean NaNs and ensure we have enough data
+        scores = np.array(scores)
+        scores = scores[~np.isnan(scores)]
+
         if len(scores) < 2:
             return 0.0
 
         x = np.arange(len(scores))
         # Using polyfit to find the slope of the error
-        slope, _ = np.polyfit(x, scores, 1)
+        try:
+            slope, _ = np.polyfit(x, scores, 1)
+        except np.linalg.LinAlgError:
+            return 0.0
 
         # If error slope is positive, health is declining (negative trend)
         return float(-slope)
